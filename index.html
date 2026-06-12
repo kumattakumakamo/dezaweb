@@ -346,49 +346,42 @@
             );
         }
 
-        function WelcomeSection({ revealed, setRevealed }) {
-            const [visible, setVisible] = useState(false);
+        function WelcomeSection() {
+            const [phase, setPhase] = useState(0);
             const ref = useRef(null);
             useEffect(() => {
-                if (visible) return;
                 const el = ref.current;
                 if (!el) return;
                 const check = () => {
-                    if (el.getBoundingClientRect().top <= 0) setVisible(true);
+                    if (el.getBoundingClientRect().top <= 0) {
+                        window.removeEventListener('scroll', check);
+                        setPhase(1);
+                        setTimeout(() => setPhase(2), 400);
+                        setTimeout(() => setPhase(3), 1000);
+                    }
                 };
                 check();
                 window.addEventListener('scroll', check, { passive: true });
                 return () => window.removeEventListener('scroll', check);
-            }, [visible]);
-            return React.createElement("section", { ref, style: { padding: "32px 16px 24px", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(16px)", transition: "opacity 0.6s ease, transform 0.6s ease" } },
-                React.createElement("p", { style: { fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 12px" } }, "未来大情報デザインコース", React.createElement("br"), "特設サイトへようこそ！"),
-                React.createElement("p", { style: { fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "0 0 20px" } }, "このサイトでは、情報デザインコースに所属したばかりの", React.createElement("br"), React.createElement("strong", null, "2年生の学び"), "について紹介します。"),
-                React.createElement("div", { className: "venn" },
-                    React.createElement("div", { className: "circle c1" },
-                        React.createElement("span", { className: "label label-c1" }, "情報システム")
-                    ),
+            }, []);
+            const fs = (show) => ({
+                opacity: show ? 1 : 0,
+                transform: show ? "translateY(0)" : "translateY(10px)",
+                transition: "opacity 0.5s ease,transform 0.5s ease"
+            });
+            return React.createElement("section", { ref, style: { padding: "32px 16px 24px" } },
+                React.createElement("p", { style: { ...fs(phase >= 1), fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 12px" } }, "未来大情報デザインコース", React.createElement("br"), "特設サイトへようこそ！"),
+                React.createElement("p", { style: { ...fs(phase >= 2), fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "0 0 20px" } }, "このサイトでは、情報デザインコースに所属したばかりの", React.createElement("br"), React.createElement("strong", null, "2年生の学び"), "について紹介します。"),
+                phase >= 3 && React.createElement("div", { className: "venn" },
+                    React.createElement("div", { className: "circle c1" }, React.createElement("span", { className: "label label-c1" }, "情報システム")),
                     React.createElement("div", { className: "circle c2" },
                         React.createElement("div", { className: "callout" },
-                            React.createElement("div", { className: "callout-line" },
-                                React.createElement("div", { className: "diag" }),
-                                React.createElement("div", { className: "horiz" })
-                            ),
+                            React.createElement("div", { className: "callout-line" }, React.createElement("div", { className: "diag" }), React.createElement("div", { className: "horiz" })),
                             React.createElement("span", { className: "callout-label" }, "情報デザイン")
                         )
                     ),
-                    React.createElement("div", { className: "circle c3" },
-                        React.createElement("span", { className: "label label-c3" }, "知覚システム")
-                    ),
-                    React.createElement("div", { className: "circle c4" },
-                        React.createElement("span", { className: "label label-c4" }, "複雑系")
-                    )
-                ),
-                React.createElement("div", { onClick: () => setRevealed(true), style: { border: "1.5px solid " + (revealed ? "#639922" : "#888780"), borderRadius: 8, padding: 14, cursor: "pointer", background: revealed ? "#EAF3DE" : "#FAF8F3", transition: "background 0.3s" } },
-                    !revealed
-                        ? [React.createElement("div", { key: "q", style: { fontWeight: 700, fontSize: 13, marginBottom: 8 } }, React.createElement("i", { className: "ti ti-help-circle", style: { marginRight: 6 } }), "クイズ：これはデザインですか？"),
-                        React.createElement("div", { key: "t", style: { fontSize: 13, lineHeight: 2, borderLeft: "3px solid #D3D1C7", paddingLeft: 10 } }, React.createElement("span", { style: { fontFamily: "serif" } }, "未来大学情報デザインコース"), React.createElement("br"), React.createElement("span", { style: { fontFamily: "serif" } }, "2025年度 春学期カリキュラム"), React.createElement("br"), React.createElement("span", { style: { fontSize: 11, color: "#888780" } }, "（タップして確認する）"))]
-                        : [React.createElement("div", { key: "a", style: { fontWeight: 700, fontSize: 13, color: "#3B6D11", marginBottom: 6 } }, "✓ これもデザインされています！"),
-                        React.createElement("p", { key: "p", style: { fontSize: 12, color: "#5F5E5A", margin: 0, lineHeight: 1.7 } }, "フォント・行間・余白——テキストだけのポスターも、すべてデザインの選択です。情報デザインは「見た目だけ」じゃない。")]
+                    React.createElement("div", { className: "circle c3" }, React.createElement("span", { className: "label label-c3" }, "知覚システム")),
+                    React.createElement("div", { className: "circle c4" }, React.createElement("span", { className: "label label-c4" }, "複雑系"))
                 )
             );
         }
@@ -587,7 +580,6 @@
             const [easterFound, setEasterFound] = useState(false);
             const [tapCount, setTapCount] = useState(0);
             const [shStep, setShStep] = useState(0);
-            const [revealed, setRevealed] = useState(false);
 
             const handleLogoTap = () => {
                 const n = tapCount + 1;
@@ -605,7 +597,7 @@
                 React.createElement(AppHeader, { onLogoTap: handleLogoTap }),
                 easterFound && React.createElement(EasterEggPopup, { onClose: () => setEasterFound(false) }),
                 React.createElement(KeyVisual),
-                React.createElement(WelcomeSection, { revealed, setRevealed }),
+                React.createElement(WelcomeSection, null),
                 React.createElement(CycleSection),
                 React.createElement(LearningSection, { activeCourse, setActiveCourse, slideIndex, updateSlide, onExperience: () => setScreen("experience") }),
                 React.createElement(MiraitenSection),
