@@ -89,6 +89,208 @@
             background: #D3D1C7;
             border-radius: 2px
         }
+
+        .venn {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            height: 360px;
+            margin: 0 auto 20px;
+            overflow: visible
+        }
+
+        .circle {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            opacity: 0;
+            animation: moveIn 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards
+        }
+
+        .c1 {
+            background: rgba(60, 120, 220, 0.5);
+            --x-start: 260px;
+            --y-start: 0px;
+            --x-end: 80px;
+            --y-end: 0px
+        }
+
+        .c2 {
+            background: rgba(255, 120, 150, 0.5);
+            --x-start: 0px;
+            --y-start: 260px;
+            --x-end: 0px;
+            --y-end: 80px;
+            animation: moveIn 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards, c2Zoom 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 0s, 3.1s;
+            transform-origin: center
+        }
+
+        .c3 {
+            background: rgba(255, 140, 60, 0.5);
+            --x-start: -260px;
+            --y-start: 0px;
+            --x-end: -80px;
+            --y-end: 0px
+        }
+
+        .c4 {
+            background: rgba(102, 204, 153, 0.5);
+            --x-start: 0px;
+            --y-start: -260px;
+            --x-end: 0px;
+            --y-end: -80px
+        }
+
+        @keyframes moveIn {
+            from {
+                opacity: 0;
+                transform: translate(calc(-50% + var(--x-start)), calc(-50% + var(--y-start)))
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(calc(-50% + var(--x-end)), calc(-50% + var(--y-end)))
+            }
+        }
+
+        .label {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            color: black;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            opacity: 0;
+            animation: labelIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 1.9s
+        }
+
+        @keyframes labelIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -40%)
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%)
+            }
+        }
+
+        .label-c1 {
+            left: 70%;
+            top: 50%
+        }
+
+        .label-c3 {
+            left: 30%;
+            top: 50%
+        }
+
+        .label-c4 {
+            left: 50%;
+            top: 30%
+        }
+
+        .callout {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 360px;
+            height: 200px;
+            pointer-events: none
+        }
+
+        .callout-label {
+            position: absolute;
+            left: 5px;
+            top: 40px;
+            color: black;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            animation: infoLabelIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards, infoLabelMove 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 1.9s, 3.2s
+        }
+
+        @keyframes infoLabelIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -40%)
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%)
+            }
+        }
+
+        @keyframes infoLabelMove {
+            from {
+                opacity: 1;
+                transform: translate(-50%, -50%)
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-20%, 30%) translate(115px, 0px)
+            }
+        }
+
+        .callout-line {
+            opacity: 0;
+            animation: calloutFade 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 3.2s
+        }
+
+        .diag {
+            position: absolute;
+            left: 45px;
+            top: 35px;
+            width: 50px;
+            height: 2px;
+            background: black;
+            transform: rotate(45deg);
+            transform-origin: left center
+        }
+
+        .horiz {
+            position: absolute;
+            left: 80px;
+            top: 70px;
+            width: 40px;
+            height: 2px;
+            background: black
+        }
+
+        @keyframes calloutFade {
+            from {
+                opacity: 0;
+                transform: translateX(-20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        @keyframes c2Zoom {
+            from {
+                transform: translate(calc(-50% + var(--x-end)), calc(-50% + var(--y-end))) scale(1)
+            }
+
+            to {
+                transform: translate(calc(-50% + var(--x-end)), calc(-50% + var(--y-end))) scale(1.25)
+            }
+        }
     </style>
 </head>
 
@@ -145,17 +347,28 @@
         }
 
         function WelcomeSection({ revealed, setRevealed }) {
-            const circles = [
-                { label: "複雑系\nコース", top: 8, left: 16, right: "auto", bottom: "auto", h: false },
-                { label: "知能システム\nコース", top: 8, left: "auto", right: 16, bottom: "auto", h: false },
-                { label: "情報システム\nコース", top: "auto", left: 16, right: "auto", bottom: 8, h: false },
-                { label: "情報デザイン\nコース", top: "auto", left: "auto", right: 16, bottom: 8, h: true },
-            ];
             return React.createElement("section", { style: { padding: "32px 16px 24px" } },
                 React.createElement("p", { style: { fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 12px" } }, "未来大情報デザインコース", React.createElement("br"), "特設サイトへようこそ！"),
                 React.createElement("p", { style: { fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "0 0 20px" } }, "このサイトでは、情報デザインコースに所属したばかりの", React.createElement("br"), React.createElement("strong", null, "2年生の学び"), "について紹介します。"),
-                React.createElement("div", { style: { position: "relative", height: 186, marginBottom: 20 } },
-                    circles.map((c, i) => React.createElement("div", { key: i, style: { position: "absolute", width: 84, height: 84, borderRadius: "50%", border: c.h ? "2.5px solid #2C2C2A" : "1.5px solid #888780", background: c.h ? "rgba(159,225,203,0.35)" : "rgba(250,248,243,0.7)", display: "flex", alignItems: "center", justifyContent: "center", top: c.top, bottom: c.bottom, left: c.left, right: c.right, fontSize: 10, fontWeight: c.h ? 700 : 400, textAlign: "center", lineHeight: 1.4, whiteSpace: "pre-line" } }, c.label))
+                React.createElement("div", { className: "venn" },
+                    React.createElement("div", { className: "circle c1" },
+                        React.createElement("span", { className: "label label-c1" }, "情報システム")
+                    ),
+                    React.createElement("div", { className: "circle c2" },
+                        React.createElement("div", { className: "callout" },
+                            React.createElement("div", { className: "callout-line" },
+                                React.createElement("div", { className: "diag" }),
+                                React.createElement("div", { className: "horiz" })
+                            ),
+                            React.createElement("span", { className: "callout-label" }, "情報デザイン")
+                        )
+                    ),
+                    React.createElement("div", { className: "circle c3" },
+                        React.createElement("span", { className: "label label-c3" }, "知覚システム")
+                    ),
+                    React.createElement("div", { className: "circle c4" },
+                        React.createElement("span", { className: "label label-c4" }, "複雑系")
+                    )
                 ),
                 React.createElement("div", { onClick: () => setRevealed(true), style: { border: "1.5px solid " + (revealed ? "#639922" : "#888780"), borderRadius: 8, padding: 14, cursor: "pointer", background: revealed ? "#EAF3DE" : "#FAF8F3", transition: "background 0.3s" } },
                     !revealed
