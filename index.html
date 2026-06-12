@@ -352,17 +352,32 @@
             useEffect(() => {
                 const el = ref.current;
                 if (!el) return;
+                let savedY = 0;
+                const unlock = () => {
+                    document.body.style.position = '';
+                    document.body.style.top = '';
+                    document.body.style.width = '';
+                    window.scrollTo(0, savedY);
+                    window.removeEventListener('wheel', unlock);
+                    window.removeEventListener('touchstart', unlock);
+                };
                 const check = () => {
                     if (el.getBoundingClientRect().top <= 0) {
                         window.removeEventListener('scroll', check);
+                        savedY = window.scrollY;
+                        document.body.style.position = 'fixed';
+                        document.body.style.top = `-${savedY}px`;
+                        document.body.style.width = '100%';
                         setPhase(1);
                         setTimeout(() => setPhase(2), 400);
                         setTimeout(() => setPhase(3), 1000);
+                        window.addEventListener('wheel', unlock, { passive: true });
+                        window.addEventListener('touchstart', unlock, { passive: true });
                     }
                 };
                 check();
                 window.addEventListener('scroll', check, { passive: true });
-                return () => window.removeEventListener('scroll', check);
+                return () => { window.removeEventListener('scroll', check); unlock(); };
             }, []);
             const fs = (show) => ({
                 opacity: show ? 1 : 0,
