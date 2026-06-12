@@ -21,11 +21,6 @@
             background: #e8e6e0
         }
 
-        html {
-            scroll-snap-type: y mandatory;
-            scroll-padding-top: 50px
-        }
-
         body {
             display: flex;
             justify-content: center;
@@ -374,7 +369,7 @@
                 transform: show ? "translateY(0)" : "translateY(10px)",
                 transition: "opacity 0.5s ease,transform 0.5s ease"
             });
-            return React.createElement("section", { ref, style: { padding: "32px 16px 24px", scrollSnapAlign: "start", scrollSnapStop: "always" } },
+            return React.createElement("section", { ref, style: { padding: "32px 16px 24px" } },
                 React.createElement("p", { style: { ...fs(phase >= 1), fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 12px" } }, "未来大情報デザインコース", React.createElement("br"), "特設サイトへようこそ！"),
                 React.createElement("p", { style: { ...fs(phase >= 2), fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "0 0 20px" } }, "このサイトでは、情報デザインコースに所属したばかりの", React.createElement("br"), React.createElement("strong", null, "2年生の学び"), "について紹介します。"),
                 phase >= 3 && React.createElement("div", { className: "venn" },
