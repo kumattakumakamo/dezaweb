@@ -297,7 +297,7 @@
 <body>
     <div id="root"></div>
     <script>
-        const { useState, useRef } = React;
+        const { useState, useRef, useEffect } = React;
 
         const COURSES = [
             { id: 0, period: "4月・5月", name: "仮想生物", desc: "架空の生物をデザインし、生態系を考える課題。観察・発想・表現の基礎を習得する。", icon: "ti-bug", cols: ["#D3D1C7", "#9FE1CB", "#FAC775", "#B4B2A9"] },
@@ -347,7 +347,20 @@
         }
 
         function WelcomeSection({ revealed, setRevealed }) {
-            return React.createElement("section", { style: { padding: "32px 16px 24px" } },
+            const [visible, setVisible] = useState(false);
+            const ref = useRef(null);
+            useEffect(() => {
+                if (visible) return;
+                const el = ref.current;
+                if (!el) return;
+                const check = () => {
+                    if (el.getBoundingClientRect().top <= 0) setVisible(true);
+                };
+                check();
+                window.addEventListener('scroll', check, { passive: true });
+                return () => window.removeEventListener('scroll', check);
+            }, [visible]);
+            return React.createElement("section", { ref, style: { padding: "32px 16px 24px", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(16px)", transition: "opacity 0.6s ease, transform 0.6s ease" } },
                 React.createElement("p", { style: { fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 12px" } }, "未来大情報デザインコース", React.createElement("br"), "特設サイトへようこそ！"),
                 React.createElement("p", { style: { fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "0 0 20px" } }, "このサイトでは、情報デザインコースに所属したばかりの", React.createElement("br"), React.createElement("strong", null, "2年生の学び"), "について紹介します。"),
                 React.createElement("div", { className: "venn" },
