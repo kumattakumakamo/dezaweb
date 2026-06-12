@@ -21,6 +21,11 @@
             background: #e8e6e0
         }
 
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-padding-top: 50px
+        }
+
         body {
             display: flex;
             justify-content: center;
@@ -352,43 +357,24 @@
             useEffect(() => {
                 const el = ref.current;
                 if (!el) return;
-                let unlocked = false;
-                const preventScroll = (e) => { if (!unlocked) e.preventDefault(); };
-                const unlock = () => {
-                    if (unlocked) return;
-                    unlocked = true;
-                    window.removeEventListener('wheel', preventScroll);
-                    window.removeEventListener('touchmove', preventScroll);
-                    window.removeEventListener('wheel', unlock);
-                    window.removeEventListener('touchstart', unlock);
-                };
                 const check = () => {
-                    if (el.getBoundingClientRect().top <= 0) {
+                    if (el.getBoundingClientRect().top <= 55) {
                         window.removeEventListener('scroll', check);
                         setPhase(1);
                         setTimeout(() => setPhase(2), 400);
                         setTimeout(() => setPhase(3), 1000);
-                        window.addEventListener('wheel', preventScroll, { passive: false });
-                        window.addEventListener('touchmove', preventScroll, { passive: false });
-                        // 150ms後にアンロック受付開始（慣性スクロールの即時解除を防ぐ）
-                        setTimeout(() => {
-                            window.addEventListener('wheel', unlock, { once: true, passive: true });
-                            window.addEventListener('touchstart', unlock, { once: true, passive: true });
-                        }, 150);
-                        // アニメーション完了後の自動解除フォールバック
-                        setTimeout(unlock, 1500);
                     }
                 };
                 check();
                 window.addEventListener('scroll', check, { passive: true });
-                return () => { window.removeEventListener('scroll', check); unlock(); };
+                return () => window.removeEventListener('scroll', check);
             }, []);
             const fs = (show) => ({
                 opacity: show ? 1 : 0,
                 transform: show ? "translateY(0)" : "translateY(10px)",
                 transition: "opacity 0.5s ease,transform 0.5s ease"
             });
-            return React.createElement("section", { ref, style: { padding: "32px 16px 24px" } },
+            return React.createElement("section", { ref, style: { padding: "32px 16px 24px", scrollSnapAlign: "start", scrollSnapStop: "always" } },
                 React.createElement("p", { style: { ...fs(phase >= 1), fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 12px" } }, "未来大情報デザインコース", React.createElement("br"), "特設サイトへようこそ！"),
                 React.createElement("p", { style: { ...fs(phase >= 2), fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "0 0 20px" } }, "このサイトでは、情報デザインコースに所属したばかりの", React.createElement("br"), React.createElement("strong", null, "2年生の学び"), "について紹介します。"),
                 phase >= 3 && React.createElement("div", { className: "venn" },
