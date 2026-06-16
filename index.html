@@ -319,9 +319,9 @@
         const SH_DESC = ["4つのノードがいます。誰と誰がどんな関係でつながっているか考えてみよう。", "ユーザーとサービスの関係が繋がりました。他の関係はどうでしょう？", "完成！全員が何らかの関係で結ばれています。これがステークホルダーマップです。"];
         const BASE = { fontFamily: "'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo',sans-serif", background: "#FAF8F3", color: "#2C2C2A", maxWidth: 390, minHeight: "100vh" };
 
-        function AppHeader({ onLogoTap }) {
+        function AppHeader() {
             return React.createElement("header", { style: { position: "sticky", top: 0, zIndex: 100, background: "rgba(250,248,243,0.96)", borderBottom: "1.5px solid #2C2C2A", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px" } },
-                React.createElement("span", { style: { fontSize: 13, fontWeight: 700, cursor: "pointer", userSelect: "none" }, onClick: onLogoTap }, "情報デザインコース"),
+                React.createElement("span", { style: { fontSize: 13, fontWeight: 700 } }, "情報デザインコース"),
                 React.createElement("i", { className: "ti ti-menu-2", style: { fontSize: 22 } })
             );
         }
@@ -371,28 +371,31 @@
             return React.createElement("section", { ref, style: { padding: "32px 16px 24px" } },
                 React.createElement("p", { style: { ...fs(phase >= 1), fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 12px" } }, "未来大の情報デザインコースってどんなとこ？"),
                 React.createElement("p", { style: { ...fs(phase >= 2), fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "0 0 20px" } }, "8/3オープンキャンパスでも、情報デザインコースブースにて詳しくお話します"),
-                phase >= 3 && React.createElement("div", { className: "venn" },
-                    React.createElement("div", { className: "circle c1" }, React.createElement("span", { className: "label label-c1" }, "情報システム")),
-                    React.createElement("div", { className: "circle c2" },
-                        React.createElement("div", { className: "callout" },
-                            React.createElement("div", { className: "callout-line" }, React.createElement("div", { className: "diag" }), React.createElement("div", { className: "horiz" })),
-                            React.createElement("span", { className: "callout-label" }, "情報デザイン")
+                phase >= 3 && React.createElement("div", { style: { display: "flex", gap: 8, margin: "8px 0" } },
+                    React.createElement("div", { style: { flex: 1, position: "relative", height: 175, overflow: "hidden" } },
+                        React.createElement("div", { className: "venn", style: { position: "absolute", width: 360, maxWidth: "none", height: 360, margin: 0, top: 0, left: "50%", marginLeft: -180, transform: "scale(0.485)", transformOrigin: "top center" } },
+                            React.createElement("div", { className: "circle c1" }, React.createElement("span", { className: "label label-c1" }, "情報システム")),
+                            React.createElement("div", { className: "circle c2" },
+                                React.createElement("div", { className: "callout" },
+                                    React.createElement("div", { className: "callout-line" }, React.createElement("div", { className: "diag" }), React.createElement("div", { className: "horiz" })),
+                                    React.createElement("span", { className: "callout-label" }, "情報デザイン")
+                                )
+                            ),
+                            React.createElement("div", { className: "circle c3" }, React.createElement("span", { className: "label label-c3" }, "知覚システム")),
+                            React.createElement("div", { className: "circle c4" }, React.createElement("span", { className: "label label-c4" }, "複雑系"))
                         )
                     ),
-                    React.createElement("div", { className: "circle c3" }, React.createElement("span", { className: "label label-c3" }, "知覚システム")),
-                    React.createElement("div", { className: "circle c4" }, React.createElement("span", { className: "label label-c4" }, "複雑系"))
-                ),
-                phase >= 3 && React.createElement("div", { style: { padding: "28px 0 8px" } },
-                    React.createElement("p", { style: { fontSize: 11, color: "#888780", fontWeight: 600, textAlign: "center", marginBottom: 12 } }, "制作サイクル"),
-                    React.createElement("div", { style: { position: "relative", width: 220, height: 220, margin: "0 auto" } },
-                        React.createElement("div", { style: { position: "absolute", top: 28, left: 28, right: 28, bottom: 28, borderRadius: "50%", border: "1.5px dashed #C0C0B8" } }),
-                        React.createElement("div", { style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 22, color: "#888780" } }, "↻"),
-                        CI.map((item, i) => React.createElement("div", { key: i, style: { position: "absolute", ...CP[i], display: "flex", flexDirection: "column", alignItems: "center", gap: 3 } },
-                            React.createElement("div", { style: { width: 42, height: 42, borderRadius: "50%", border: "2px solid #2C2C2A", background: "#FAF8F3", display: "flex", alignItems: "center", justifyContent: "center" } },
-                                React.createElement("i", { className: "ti " + item.icon, style: { fontSize: 17 } })
-                            ),
-                            React.createElement("span", { style: { fontSize: 9, fontWeight: 600, whiteSpace: "nowrap" } }, item.label)
-                        ))
+                    React.createElement("div", { style: { flex: 1, position: "relative", height: 175, overflow: "hidden" } },
+                        React.createElement("div", { style: { position: "absolute", width: 220, height: 220, top: 0, left: "50%", marginLeft: -110, transform: "scale(0.8)", transformOrigin: "top center" } },
+                            React.createElement("div", { style: { position: "absolute", top: 28, left: 28, right: 28, bottom: 28, borderRadius: "50%", border: "1.5px dashed #C0C0B8" } }),
+                            React.createElement("div", { style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 22, color: "#888780" } }, "↻"),
+                            CI.map((item, i) => React.createElement("div", { key: i, style: { position: "absolute", ...CP[i], display: "flex", flexDirection: "column", alignItems: "center", gap: 3 } },
+                                React.createElement("div", { style: { width: 42, height: 42, borderRadius: "50%", border: "2px solid #2C2C2A", background: "#FAF8F3", display: "flex", alignItems: "center", justifyContent: "center" } },
+                                    React.createElement("i", { className: "ti " + item.icon, style: { fontSize: 17 } })
+                                ),
+                                React.createElement("span", { style: { fontSize: 9, fontWeight: 600, whiteSpace: "nowrap" } }, item.label)
+                            ))
+                        )
                     )
                 ),
                 phase >= 3 && React.createElement("div", { style: { marginTop: 20 } },
@@ -466,21 +469,10 @@
             );
         }
 
-        function EasterEggPopup({ onClose }) {
-            return React.createElement("div", { onClick: onClose, style: { position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center" } },
-                React.createElement("div", { style: { background: "#FAF8F3", border: "2.5px solid #2C2C2A", borderRadius: 8, padding: "24px 20px", maxWidth: 280, textAlign: "center", transform: "rotate(-1.5deg)", boxShadow: "4px 4px 0 rgba(0,0,0,0.2)" } },
-                    React.createElement("div", { style: { fontSize: 32, marginBottom: 8 } }, "🎉"),
-                    React.createElement("div", { style: { fontWeight: 700, fontSize: 15, marginBottom: 10 } }, "隠れ情報デザイナーを発見！"),
-                    React.createElement("p", { style: { fontSize: 12, color: "#5F5E5A", lineHeight: 1.8, margin: "0 0 12px" } }, "実はこのサイト、Figmaでデザインしてからコーディングしました。デザインツールが気になる人は、OCで聞いてみてね！"),
-                    React.createElement("div", { style: { fontSize: 11, color: "#888780" } }, "タップで閉じる")
-                )
-            );
-        }
-
         function ExperienceTop({ onSelect, onBack }) {
             const buildings = [[56, 96, 88, 64, "講義棟"], [218, 84, 96, 72, "研究棟"], [28, 238, 72, 52, "工房"], [244, 250, 84, 52, "アトリエ"], [124, 346, 104, 46, "ライブラリ"]];
             return React.createElement("div", { style: { ...BASE, overflowX: "hidden" } },
-                React.createElement(AppHeader, { onLogoTap: () => { } }),
+                React.createElement(AppHeader, null),
                 React.createElement("div", { style: { position: "relative", height: 476, background: "#F1EFE8", overflow: "hidden" } },
                     React.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(0,0,0,0.04) 28px,rgba(0,0,0,0.04) 29px),repeating-linear-gradient(90deg,transparent,transparent 28px,rgba(0,0,0,0.04) 28px,rgba(0,0,0,0.04) 29px)" } }),
                     React.createElement("div", { style: { position: "absolute", top: 16, left: "50%", transform: "translateX(-50%) rotate(-2deg)", background: "#FAF8F3", border: "2px solid #2C2C2A", borderRadius: 4, padding: "6px 18px", fontSize: 14, fontWeight: 700, zIndex: 2, whiteSpace: "nowrap", boxShadow: "2px 2px 0 rgba(0,0,0,0.12)" } }, "情デザ体験入学コーナー"),
@@ -564,15 +556,8 @@
             const [screen, setScreen] = useState("main");
             const [activeCourse, setActiveCourse] = useState(0);
             const [slideIndex, setSlideIndex] = useState([0, 0, 0, 0, 0, 0]);
-            const [easterFound, setEasterFound] = useState(false);
-            const [tapCount, setTapCount] = useState(0);
             const [shStep, setShStep] = useState(0);
 
-            const handleLogoTap = () => {
-                const n = tapCount + 1;
-                setTapCount(n);
-                if (n >= 5) { setEasterFound(true); setTapCount(0); }
-            };
             const updateSlide = (id, dir) => {
                 setSlideIndex(prev => { const next = [...prev]; next[id] = (next[id] + dir + 4) % 4; return next; });
             };
@@ -581,12 +566,10 @@
             if (screen === "experience") return React.createElement(ExperienceTop, { onSelect: setScreen, onBack: () => setScreen("main") });
 
             return React.createElement("div", { style: { ...BASE, overflowX: "hidden" } },
-                React.createElement(AppHeader, { onLogoTap: handleLogoTap }),
-                easterFound && React.createElement(EasterEggPopup, { onClose: () => setEasterFound(false) }),
+                React.createElement(AppHeader, null),
                 React.createElement(KeyVisual),
                 React.createElement(WelcomeSection, null),
                 React.createElement(LearningSection, { activeCourse, setActiveCourse, slideIndex, updateSlide, onExperience: () => setScreen("experience") }),
-                React.createElement("div", { style: { padding: "16px", textAlign: "center", fontSize: 11, color: "#888780", borderTop: "1px solid #D3D1C7" } }, "※ このサイトにはイースターエッグが隠れています"),
                 React.createElement(CTASection)
             );
         }
