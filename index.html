@@ -352,17 +352,16 @@
             useEffect(() => {
                 const el = ref.current;
                 if (!el) return;
-                const check = () => {
-                    if (el.getBoundingClientRect().top <= 55) {
-                        window.removeEventListener('scroll', check);
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) {
+                        observer.disconnect();
                         setPhase(1);
                         setTimeout(() => setPhase(2), 400);
                         setTimeout(() => setPhase(3), 1000);
                     }
-                };
-                check();
-                window.addEventListener('scroll', check, { passive: true });
-                return () => window.removeEventListener('scroll', check);
+                }, { threshold: 0 });
+                observer.observe(el);
+                return () => observer.disconnect();
             }, []);
             const fs = (show) => ({ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)", transition: "opacity 0.5s ease,transform 0.5s ease" });
             const CI = [{ icon: "ti-eye", label: "観察する" }, { icon: "ti-bulb", label: "発想する" }, { icon: "ti-pencil", label: "つくる" }, { icon: "ti-presentation", label: "伝える" }];
