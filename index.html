@@ -291,6 +291,38 @@
                 transform: translate(calc(-50% + var(--x-end)), calc(-50% + var(--y-end))) scale(1.25)
             }
         }
+
+        @supports (animation-timeline: view()) {
+            @keyframes secIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px)
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0)
+                }
+            }
+
+            @keyframes secOut {
+                from {
+                    opacity: 1;
+                    transform: translateY(0)
+                }
+
+                to {
+                    opacity: 0;
+                    transform: translateY(-30px)
+                }
+            }
+
+            .sec-scroll {
+                animation: secIn linear both, secOut linear both;
+                animation-timeline: view(), view();
+                animation-range: entry 0% entry 30%, exit 70% exit 100%;
+            }
+        }
     </style>
 </head>
 
@@ -328,7 +360,7 @@
 
         function KeyVisual() {
             const colors = ["#D3D1C7", "#9FE1CB", "#FAC775", "#CECBF6", "#B5D4F4", "#F5C4B3", "#C0DD97", "#B4B2A9", "#9FE1CB", "#FAC775"];
-            return React.createElement("section", { style: { position: "relative", height: 500, overflow: "hidden", background: "#F1EFE8" } },
+            return React.createElement("section", { className: "sec-scroll", style: { position: "relative", height: "100vh", overflow: "hidden", background: "#F1EFE8" } },
                 [colors, colors.slice().reverse()].map((col, ci) =>
                     React.createElement("div", { key: ci, style: { position: "absolute", top: 0, bottom: 0, left: ci === 0 ? "6px" : "calc(50% + 3px)", right: ci === 0 ? "calc(50% + 3px)" : "6px", overflow: "hidden" } },
                         React.createElement("div", { className: ci === 0 ? "kv-up" : "kv-down" },
@@ -347,31 +379,32 @@
         }
 
         function WelcomeSection() {
-            const [phase, setPhase] = useState(0);
-            const ref = useRef(null);
+            const [v1, setV1] = useState(false);
+            const [v2, setV2] = useState(false);
+            const [v3, setV3] = useState(false);
+            const [v4, setV4] = useState(false);
+            const [v2done, setV2done] = useState(false);
+            const r1 = useRef(null), r2 = useRef(null), r3 = useRef(null), r4 = useRef(null);
+            useEffect(() => { if (!v2) return; const t = setTimeout(() => setV2done(true), 2800); return () => clearTimeout(t); }, [v2]);
             useEffect(() => {
-                const el = ref.current;
-                if (!el) return;
-                const observer = new IntersectionObserver(([entry]) => {
-                    if (entry.isIntersecting) {
-                        observer.disconnect();
-                        setPhase(1);
-                        setTimeout(() => setPhase(2), 400);
-                        setTimeout(() => setPhase(3), 1000);
-                    }
-                }, { threshold: 0 });
-                observer.observe(el);
-                return () => observer.disconnect();
+                const opts = { threshold: 0, rootMargin: "0px 0px -120px 0px" };
+                const pairs = [[r1, setV1], [r2, setV2], [r3, setV3], [r4, setV4]];
+                const obs = pairs.map(([r, s]) => {
+                    const o = new IntersectionObserver(([e]) => { if (e.isIntersecting) { s(true); o.disconnect(); } }, opts);
+                    if (r.current) o.observe(r.current);
+                    return o;
+                });
+                return () => obs.forEach(o => o.disconnect());
             }, []);
-            const fs = (show) => ({ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(10px)", transition: "opacity 0.5s ease,transform 0.5s ease" });
+            const fs = (v) => ({ opacity: v ? 1 : 0, transform: v ? "translateY(0)" : "translateY(24px)", transition: "opacity 0.7s ease-out,transform 0.7s ease-out" });
             const CI = [{ icon: "ti-eye", label: "観察する" }, { icon: "ti-bulb", label: "発想する" }, { icon: "ti-pencil", label: "つくる" }, { icon: "ti-presentation", label: "伝える" }];
             const CP = [{ top: 0, left: "50%", transform: "translateX(-50%)" }, { top: "50%", right: 0, transform: "translateY(-50%)" }, { bottom: 0, left: "50%", transform: "translateX(-50%)" }, { top: "50%", left: 0, transform: "translateY(-50%)" }];
             const TI = [{ icon: "ti-brand-figma", name: "Figma" }, { icon: "ti-vector-bezier", name: "Illustrator" }, { icon: "ti-hammer", name: "工房" }, { icon: "ti-palette", name: "アトリエ" }, { icon: "ti-camera", name: "カメラ" }, { icon: "ti-box", name: "3Dプリンタ" }];
-            return React.createElement("section", { ref, style: { padding: "32px 16px 24px" } },
-                React.createElement("p", { style: { ...fs(phase >= 1), fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 20px" } }, "未来大の情報デザインコースってどんなとこ？"),
-                phase >= 3 && React.createElement("div", { style: { display: "flex", gap: 8, margin: "8px 0" } },
-                    React.createElement("div", { style: { flex: 1, position: "relative", height: 175, overflow: "hidden" } },
-                        React.createElement("div", { className: "venn", style: { position: "absolute", width: 360, maxWidth: "none", height: 360, margin: 0, top: 0, left: "50%", marginLeft: -180, transform: "scale(0.485)", transformOrigin: "top center" } },
+            return React.createElement("section", { className: "sec-scroll", style: { padding: "32px 16px 24px", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" } },
+                React.createElement("p", { ref: r1, style: { ...fs(v1), fontSize: 19, fontWeight: 700, lineHeight: 1.6, margin: "0 0 20px" } }, "未来大の情報デザインコースってどんなとこ？"),
+                React.createElement("div", { ref: r2, style: { display: "flex", gap: 8, margin: "8px 0", height: 175 } },
+                    v2 && React.createElement("div", { style: { flex: 1, position: "relative", height: 175, overflow: "hidden" } },
+                        React.createElement("div", { className: "venn", style: { position: "absolute", width: 360, maxWidth: "none", height: 360, margin: 0, top: 0, left: "50%", marginLeft: -180, transform: "scale(0.44)", transformOrigin: "top center" } },
                             React.createElement("div", { className: "circle c1" }, React.createElement("span", { className: "label label-c1" }, "情報システム")),
                             React.createElement("div", { className: "circle c2" },
                                 React.createElement("div", { className: "callout" },
@@ -381,9 +414,10 @@
                             ),
                             React.createElement("div", { className: "circle c3" }, React.createElement("span", { className: "label label-c3" }, "知覚システム")),
                             React.createElement("div", { className: "circle c4" }, React.createElement("span", { className: "label label-c4" }, "複雑系"))
-                        )
+                        ),
+                        React.createElement("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 50%, #FAF8F3 78%)", opacity: v2done ? 0 : 1, transition: "opacity 0.3s ease", pointerEvents: "none" } })
                     ),
-                    React.createElement("div", { style: { flex: 1, position: "relative", height: 175, overflow: "hidden" } },
+                    v2 && React.createElement("div", { style: { flex: 1, position: "relative", height: 175, overflow: "hidden" } },
                         React.createElement("div", { style: { position: "absolute", width: 220, height: 220, top: 0, left: "50%", marginLeft: -110, transform: "scale(0.8)", transformOrigin: "top center" } },
                             React.createElement("div", { style: { position: "absolute", top: 28, left: 28, right: 28, bottom: 28, borderRadius: "50%", border: "1.5px dashed #C0C0B8" } }),
                             React.createElement("div", { style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 22, color: "#888780" } }, "↻"),
@@ -396,16 +430,16 @@
                         )
                     )
                 ),
-                phase >= 3 && React.createElement("div", { style: { marginTop: 20 } },
+                React.createElement("div", { ref: r3, style: { ...fs(v3), marginTop: 20 } },
                     React.createElement("p", { style: { fontSize: 11, color: "#888780", fontWeight: 600, marginBottom: 10 } }, "使うツール・施設"),
-                    React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" } },
-                        TI.map((t, i) => React.createElement("div", { key: i, style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: 80, padding: "10px 4px", border: "1.5px solid #888780", borderRadius: 6, background: "#FAF8F3" } },
-                            React.createElement("i", { className: "ti " + t.icon, style: { fontSize: 22, color: "#2C2C2A" } }),
-                            React.createElement("span", { style: { fontSize: 10, fontWeight: 500 } }, t.name)
+                    React.createElement("div", { style: { display: "flex", gap: 6 } },
+                        TI.map((t, i) => React.createElement("div", { key: i, style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 2px", border: "1.5px solid #888780", borderRadius: 6, background: "#FAF8F3" } },
+                            React.createElement("i", { className: "ti " + t.icon, style: { fontSize: 18, color: "#2C2C2A" } }),
+                            React.createElement("span", { style: { fontSize: 9, fontWeight: 500, textAlign: "center", lineHeight: 1.2 } }, t.name)
                         ))
                     )
                 ),
-                React.createElement("p", { style: { ...fs(phase >= 2), fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "20px 0 0" } }, "8/3オープンキャンパスでも、情報デザインコースブースにて詳しくお話します")
+                React.createElement("p", { ref: r4, style: { ...fs(v4), fontSize: 13, color: "#5F5E5A", lineHeight: 1.8, margin: "20px 0 0" } }, "8/3オープンキャンパスでも、情報デザインコースブースにて詳しくお話します")
             );
         }
 
@@ -421,7 +455,7 @@
                 ref.current.scrollTo({ top: i * 440, behavior: "smooth" });
                 setActiveCourse(i);
             };
-            return React.createElement("section", null,
+            return React.createElement("section", { className: "sec-scroll", style: { minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" } },
                 React.createElement("div", { style: { padding: "24px 16px 8px" } },
                     React.createElement("div", { style: { display: "inline-block", background: "#FAF8F3", border: "2px solid #2C2C2A", borderRadius: 4, padding: "4px 10px", fontSize: 12, fontWeight: 700, transform: "rotate(-1deg)" } }, "情報デザインコース２年生の１年間の学び")
                 ),
@@ -455,7 +489,7 @@
         }
 
         function CTASection() {
-            return React.createElement("section", { style: { padding: "32px 16px 32px" } },
+            return React.createElement("section", { className: "sec-scroll", style: { padding: "32px 16px 32px", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" } },
                 React.createElement("div", { style: { display: "inline-block", background: "#FAF8F3", border: "2px solid #2C2C2A", borderRadius: 4, padding: "4px 12px", fontSize: 13, fontWeight: 700, transform: "rotate(-0.8deg)", marginBottom: 16 } }, "オープンキャンパスに来てみよう"),
                 React.createElement("div", { style: { border: "2px solid #2C2C2A", borderRadius: 8, padding: 16, marginBottom: 16, transform: "rotate(-0.2deg)" } },
                     React.createElement("p", { style: { fontWeight: 700, fontSize: 13, margin: "0 0 10px" } }, "OCに来ると…"),
