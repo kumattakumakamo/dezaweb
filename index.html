@@ -367,6 +367,13 @@
 
         function KeyVisual() {
             const colors = ["#D3D1C7", "#9FE1CB", "#FAC775", "#CECBF6", "#B5D4F4", "#F5C4B3", "#C0DD97", "#B4B2A9", "#9FE1CB", "#FAC775"];
+            const [layout, setLayout] = useState(null);
+            useEffect(() => {
+                try { const s = localStorage.getItem('poster_layout'); if (s) setLayout(JSON.parse(s)); } catch (e) { }
+            }, []);
+            const CL = { fun: '#FAC775', what: '#CECBF6', oc: '#9FE1CB' };
+            const CT = { fun: '楽しい', what: '何か', oc: 'OC' };
+            const miniFrame = (area, key) => React.createElement("div", { style: { gridArea: area, background: CL[key] + '70', display: "flex", alignItems: "center", justifyContent: "center", fontSize: 5.5, fontWeight: 700, textAlign: "center", padding: 2, lineHeight: 1.3, border: "1px solid rgba(0,0,0,0.1)" } }, CT[key]);
             return React.createElement("section", { className: "sec-scroll", style: { position: "relative", height: "100vh", overflow: "hidden", background: "#F1EFE8" } },
                 [colors, colors.slice().reverse()].map((col, ci) =>
                     React.createElement("div", { key: ci, style: { position: "absolute", top: 0, bottom: 0, left: ci === 0 ? "6px" : "calc(50% + 3px)", right: ci === 0 ? "calc(50% + 3px)" : "6px", overflow: "hidden" } },
@@ -380,6 +387,14 @@
                         React.createElement("div", { style: { fontSize: 10, color: "#888780", letterSpacing: "0.18em", marginBottom: 6 } }, "FUTURE UNIVERSITY HAKODATE"),
                         React.createElement("div", { style: { fontSize: 18, fontWeight: 700, lineHeight: 1.6 } }, React.createElement("span", null, "未来大"), React.createElement("br"), React.createElement("span", null, "情報デザインコース"), React.createElement("br"), React.createElement("span", null, "特設サイト")),
                         React.createElement("div", { style: { marginTop: 10, fontSize: 12, color: "#3B6D11", fontWeight: 700, background: "#EAF3DE", padding: "4px 10px", borderRadius: 4, display: "inline-block" } }, "「デザイン」の解像度を上げるサイト")
+                    )
+                ),
+                layout && React.createElement("div", { style: { position: "absolute", bottom: 20, right: 14, zIndex: 10 } },
+                    React.createElement("div", { style: { fontSize: 8, color: "#888780", textAlign: "right", marginBottom: 3 } }, "あなたのレイアウト"),
+                    React.createElement("div", { style: { width: 72, height: 98, background: "#fff", border: "1.5px solid #2C2C2A", padding: 4, display: "grid", gridTemplateAreas: '"large large" "medium small"', gridTemplateRows: "55% 45%", gridTemplateColumns: "3fr 2fr", gap: 2, boxShadow: "2px 2px 0 rgba(0,0,0,0.12)" } },
+                        miniFrame("large", layout.large),
+                        miniFrame("medium", layout.medium),
+                        miniFrame("small", layout.small)
                     )
                 )
             );

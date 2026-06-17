@@ -779,6 +779,7 @@
             window.location.href = TOP_URL;
         });
         document.getElementById('btn-next').addEventListener('click', () => {
+            try { localStorage.setItem('poster_layout', JSON.stringify(placed)); } catch (e) { }
             window.location.href = TOP_URL;
         });
 
