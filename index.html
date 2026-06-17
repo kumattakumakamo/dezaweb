@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>未来大 情報デザインコース 特設サイト</title>
+    <script>
+        // 初回訪問のみポスターゲーム（プロローグ）へリダイレクト
+        if (!sessionStorage.getItem('prologue_done')) {
+            sessionStorage.setItem('prologue_done', '1');
+            window.location.replace('./poster-game.html');
+        }
+    </script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">

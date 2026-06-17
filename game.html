@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <title>ポスター制作タイプ別診断</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: #F1EFE8;
+            font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+            color: #2C2C2A
+        }
+
+        #app {
+            max-width: 390px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #FAF8F3;
+            display: flex;
+            flex-direction: column
+        }
+
+        .hdr {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(250, 248, 243, 0.96);
+            border-bottom: 1.5px solid #2C2C2A;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .hdr-title {
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .skip-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            z-index: 50;
+            background: rgba(44, 44, 42, 0.08);
+            border: 1.5px solid rgba(44, 44, 42, 0.18);
+            border-radius: 20px;
+            padding: 7px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #888780;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 0.04em;
+            backdrop-filter: blur(4px);
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .skip-btn.next {
+            background: #2C2C2A;
+            border-color: #2C2C2A;
+            color: #FAF8F3;
+            font-size: 13px;
+            padding: 10px 18px;
+        }
+
+        .screen {
+            display: none;
+            flex: 1;
+            flex-direction: column
+        }
+
+        .screen.active {
+            display: flex
+        }
+
+        /* game */
+        .nudge {
+            padding: 14px 20px 6px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #2C2C2A;
+            line-height: 1.5;
+        }
+
+        .nudge small {
+            display: block;
+            font-size: 10px;
+            font-weight: 400;
+            color: #888780;
+            margin-top: 4px;
+            letter-spacing: 0.03em;
+        }
+
+        .poster-wrap {
+            display: flex;
+            justify-content: center;
+            padding: 8px 16px 0
+        }
+
+        .poster {
+            width: 272px;
+            height: 368px;
+            background: #fff;
+            border: 2px solid #2C2C2A;
+            padding: 10px;
+            display: grid;
+            grid-template-areas: "large large" "medium small";
+            grid-template-rows: 55% 45%;
+            grid-template-columns: 3fr 2fr;
+            gap: 7px;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12);
+            position: relative
+        }
+
+        .poster-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            font-size: 9px;
+            color: #888780;
+            background: #FAF8F3;
+            padding: 0 4px
+        }
+
+        .frame {
+            border: 1.5px dashed #C0C0B8;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.1s, background 0.1s
+        }
+
+        .frame[data-sz=large] {
+            grid-area: large
+        }
+
+        .frame[data-sz=medium] {
+            grid-area: medium
+        }
+
+        .frame[data-sz=small] {
+            grid-area: small
+        }
+
+        .frame.over {
+            border-color: #2C2C2A;
+            border-style: solid;
+            background: rgba(159, 225, 203, 0.25)
+        }
+
+        .frame.filled {
+            border-style: solid;
+            border-color: #2C2C2A
+        }
+
+        .ph {
+            font-size: 9px;
+            color: #C0C0B8;
+            text-align: center;
+            line-height: 1.8;
+            pointer-events: none;
+            user-select: none
+        }
+
+        .fc {
+            position: absolute;
+            inset: 0;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            pointer-events: none;
+            user-select: none
+        }
+
+        .rm-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            z-index: 5;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid #888780;
+            background: rgba(250, 248, 243, 0.9);
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5F5E5A;
+            line-height: 1
+        }
+
+        .chips-hd {
+            padding: 10px 16px 4px;
+            font-size: 10px;
+            color: #888780;
+            font-weight: 600
+        }
+
+        .chips {
+            display: flex;
+            gap: 14px;
+            padding: 12px 20px 20px;
+            align-items: center;
+            justify-content: center
+        }
+
+        .chip {
+            padding: 10px 12px;
+            background: #fff;
+            box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.15);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2C2C2A;
+            transition: opacity 0.2s, transform 0.15s;
+            white-space: nowrap;
+        }
+
+        .chip:active {
+            cursor: grabbing;
+            transform: scale(1.04) rotate(1deg)
+        }
+
+        .chip.placed {
+            opacity: 0.2;
+            pointer-events: none;
+            box-shadow: none
+        }
+
+        .ce0 {
+            transform: rotate(-2deg)
+        }
+
+        .ce1 {
+            transform: rotate(1deg)
+        }
+
+        .ce2 {
+            transform: rotate(-1deg)
+        }
+
+        .btn-submit {
+            margin: 4px 16px 16px;
+            padding: 12px;
+            background: #2C2C2A;
+            color: #FAF8F3;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s
+        }
+
+        .btn-submit.on {
+            opacity: 1;
+            pointer-events: auto
+        }
+
+        #ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+            display: none;
+            opacity: 0.88;
+            transform: scale(1.06) rotate(2deg)
+        }
+
+        #ghost.on {
+            display: flex
+        }
+
+        /* result */
+        .res-poster-wrap {
+            display: flex;
+            justify-content: center;
+            padding: 20px 16px 12px
+        }
+
+        .res-poster {
+            width: 220px;
+            height: 298px;
+            background: #fff;
+            border: 2px solid #2C2C2A;
+            padding: 8px;
+            display: grid;
+            grid-template-areas: "large large" "medium small";
+            grid-template-rows: 55% 45%;
+            grid-template-columns: 3fr 2fr;
+            gap: 5px;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12)
+        }
+
+        .rf {
+            border: 1.5px solid #2C2C2A;
+            border-radius: 3px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px
+        }
+
+        .rf[data-sz=large] {
+            grid-area: large
+        }
+
+        .rf[data-sz=medium] {
+            grid-area: medium
+        }
+
+        .rf[data-sz=small] {
+            grid-area: small
+        }
+
+        .rfc {
+            font-size: 6.5px;
+            line-height: 1.4;
+            text-align: center;
+            overflow: hidden;
+            max-height: 100%;
+            pointer-events: none;
+            width: 100%
+        }
+
+        .res-info {
+            padding: 0 20px 12px
+        }
+
+        .res-badge {
+            display: inline-block;
+            margin-bottom: 10px;
+            background: #FAF8F3;
+            border: 2px solid #2C2C2A;
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            transform: rotate(-1deg)
+        }
+
+        .res-hook {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.6;
+            color: #2C2C2A;
+            margin-bottom: 6px
+        }
+
+        .res-desc {
+            font-size: 12px;
+            line-height: 1.7;
+            color: #888780;
+            margin-bottom: 6px
+        }
+
+        .res-detail {
+            font-size: 12px;
+            line-height: 1.8;
+            color: #5F5E5A
+        }
+
+        .res-btns {
+            display: flex;
+            gap: 8px;
+            padding: 4px 16px 32px
+        }
+
+        .btn-retry {
+            flex: 1;
+            padding: 9px 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1.5px solid #888780;
+            border-radius: 8px;
+            background: #FAF8F3;
+            color: #888780
+        }
+
+        .btn-share {
+            flex: 1;
+            padding: 9px 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1.5px solid #888780;
+            border-radius: 8px;
+            background: #FAF8F3;
+            color: #888780;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px
+        }
+
+        .btn-next {
+            flex: 1.5;
+            padding: 11px 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            background: #2C2C2A;
+            color: #FAF8F3
+        }
+
+        /* frame content */
+        .t-lg {
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.5;
+            text-align: center
+        }
+
+        .t-md {
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.5;
+            text-align: center
+        }
+
+        .t-sm {
+            font-size: 8.5px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4
+        }
+
+        .sub {
+            font-size: 8px;
+            color: #5F5E5A;
+            margin-top: 4px;
+            line-height: 1.5;
+            text-align: center
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="hdr">
+            <span class="hdr-title">ポスター制作タイプ別診断</span>
+        </div>
+
+        <div class="screen active" id="game-screen">
+            <div class="nudge">
+                どれを一番大きく見せたい？
+                <small>ドラッグして枠に置いてみよう</small>
+            </div>
+            <div class="poster-wrap">
+                <div class="poster" id="poster">
+                    <span class="poster-label">情報デザインコース 特設サイト</span>
+                    <div class="frame" data-sz="large" id="f-large">
+                        <div class="ph">大きい枠<br>ここにドロップ</div>
+                    </div>
+                    <div class="frame" data-sz="medium" id="f-medium">
+                        <div class="ph">中<br>ここに<br>ドロップ</div>
+                    </div>
+                    <div class="frame" data-sz="small" id="f-small">
+                        <div class="ph">小</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chips">
+                <div class="chip ce0" id="c-fun" data-el="fun">
+                    <span>デザインって楽しい</span>
+                </div>
+                <div class="chip ce1" id="c-what" data-el="what">
+                    <span>デザインとは何か</span>
+                </div>
+                <div class="chip ce2" id="c-oc" data-el="oc">
+                    <span>オープンキャンパスへ</span>
+                </div>
+            </div>
+            <button class="btn-submit" id="btn-submit">診断する →</button>
+        </div>
+
+        <div class="screen" id="result-screen">
+            <div class="res-poster-wrap">
+                <div class="res-poster">
+                    <div class="rf" data-sz="large" id="rf-large"></div>
+                    <div class="rf" data-sz="medium" id="rf-medium"></div>
+                    <div class="rf" data-sz="small" id="rf-small"></div>
+                </div>
+            </div>
+            <div class="res-info">
+                <div class="res-badge" id="res-type"></div>
+                <p class="res-hook" id="res-hook"></p>
+                <p class="res-desc" id="res-desc"></p>
+                <p class="res-detail" id="res-detail"></p>
+            </div>
+            <div class="res-btns">
+                <button class="btn-retry" id="btn-retry">もう一度</button>
+                <button class="btn-share" id="btn-share">シェア <i class="ti ti-share"></i></button>
+                <button class="btn-next" id="btn-next">次へ →</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="skip-btn" id="skip-btn">スキップ</button>
+    <div id="ghost"></div>
+
+    <script>
+        const ELEMS = {
+            fun: {
+                name: 'デザインって楽しい',
+                chipId: 'c-fun', bg: '#FAC775',
+                chipClass: 'ce0',
+                icon: 'ti-mood-smile',
+                content: {
+                    large: `<div class="t-lg">デザインって<br>楽しい</div><div class="sub">つくること、伝えること、<br>驚かせること。全部デザイン。</div>`,
+                    medium: `<div class="t-md">デザインって楽しい</div><div class="sub">つくるって楽しい。</div>`,
+                    small: `<div class="t-sm">デザインって<br>楽しい</div>`,
+                }
+            },
+            what: {
+                name: 'デザインとは何か',
+                chipId: 'c-what', bg: '#CECBF6',
+                chipClass: 'ce1',
+                icon: 'ti-help-circle',
+                content: {
+                    large: `<div class="t-lg">デザインとは<br>何か</div><div class="sub">情報を整理して、伝わる形にする。<br>それがデザインのしごとです。</div>`,
+                    medium: `<div class="t-md">デザインとは何か</div><div class="sub">伝わる形にすること。</div>`,
+                    small: `<div class="t-sm">デザインとは<br>何か</div>`,
+                }
+            },
+            oc: {
+                name: 'オープンキャンパスへ',
+                chipId: 'c-oc', bg: '#9FE1CB',
+                chipClass: 'ce2',
+                icon: 'ti-calendar-event',
+                content: {
+                    large: `<div class="t-lg">8/3<br>オープン<br>キャンパスへ</div><div class="sub">情報デザインコースで<br>実際に話を聞いてみよう。</div>`,
+                    medium: `<div class="t-md">8/3<br>オープンキャンパスへ</div><div class="sub">話を聞きに来てね。</div>`,
+                    small: `<div class="t-sm">8/3<br>OC へ</div>`,
+                }
+            }
+        };
+
+        const DIAGNOSES = {
+            'fun-what-oc': {
+                type: '部活勧誘ポスター',
+                hook: '「興味を持ってもらってから誘う」丁寧な構成。',
+                desc: '楽しさが一番大きく、次に説明、行動喚起は小さめ。',
+                detail: '部活の雰囲気を前面に出し、活動内容で興味をつなぎ、入部申込は小さく添える。押しつけがましくなく、来てくれる人を待つスタンスが伝わります。'
+            },
+            'fun-oc-what': {
+                type: 'ライブのフライヤー',
+                hook: '「細かいことより、まず来て」という構成。',
+                desc: '楽しさで一気に引き込み、日程・行動へすぐ誘導。説明は最小限。',
+                detail: '「とにかく来て」が伝わるポスター。細かい説明より雰囲気と日程だけあれば十分、というフライヤーらしい割り切りが出ています。'
+            },
+            'what-fun-oc': {
+                type: '博物館の解説パネル',
+                hook: '「まず知ってほしい」という構成。',
+                desc: '説明が主役で、楽しさは補足、行動喚起はほぼない。',
+                detail: '来場者がすでにそこにいることを前提にした、展示室の解説パネルに近いレイアウトです。「知ってから好きになる」という流れが見えます。'
+            },
+            'what-oc-fun': {
+                type: 'セミナーの告知チラシ',
+                hook: '「納得してから来てほしい」という構成。',
+                desc: '内容・テーマが大きく、申込情報が中くらい、楽しさは添え物。',
+                detail: '参加者に内容を吟味してほしい講演会や勉強会の告知に近い構成です。「何について」が伝わってから「申し込んでほしい」という流れ。'
+            },
+            'oc-fun-what': {
+                type: 'タイムセールのポスター',
+                hook: '「理由はいいから来て」という構成。',
+                desc: '「来て！」が最大で、楽しさで後押し、説明は最小限。',
+                detail: 'SALE・期間限定など、とにかく足を運んでもらうことが最優先のポスターに似ています。結論から始まる、勢いのある構成です。'
+            },
+            'oc-what-fun': {
+                type: '求人広告',
+                hook: '「来てほしい理由をちゃんと示す」構成。',
+                desc: '行動（参加・応募）が最大、理由・内容が続き、感情は最後に少し。',
+                detail: '応募者に判断材料を渡しながら行動を促す、誠実な構成。求人広告や公募チラシのように、理由を示してから誘います。'
+            }
+        };
+
+        /* ── State ── */
+        let placed = { large: null, medium: null, small: null };
+        let dragging = null;
+        let dragOX = 0, dragOY = 0;
+        let captorEl = null;
+
+        /* ── Utils ── */
+        const ghost = document.getElementById('ghost');
+        const chipEl = k => document.getElementById(ELEMS[k].chipId);
+        const frameEl = sz => document.getElementById(`f-${sz}`);
+        const PH = { large: '大きい枠<br>ここにドロップ', medium: '中<br>ここに<br>ドロップ', small: '小' };
+
+        function frameAtPoint(x, y) {
+            for (const f of document.querySelectorAll('.frame')) {
+                const r = f.getBoundingClientRect();
+                if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return f;
+            }
+            return null;
+        }
+        function placedCount() { return Object.values(placed).filter(Boolean).length; }
+        function updateUI() {
+            const btn = document.getElementById('btn-submit');
+            placedCount() === 3 ? btn.classList.add('on') : btn.classList.remove('on');
+        }
+
+        /* ── Frame render ── */
+        function renderFrame(sz, elKey) {
+            const f = frameEl(sz);
+            if (!elKey) {
+                f.classList.remove('filled'); f.style.background = '';
+                f.innerHTML = `<div class="ph">${PH[sz]}</div>`;
+                return;
+            }
+            f.classList.add('filled');
+            f.style.background = ELEMS[elKey].bg + '35';
+            f.innerHTML = `<div class="fc">${ELEMS[elKey].content[sz]}</div>`;
+        }
+
+        /* ── Drag ── */
+        function beginDrag(elKey, anchorEl, px, py) {
+            dragging = elKey;
+            const r = anchorEl.getBoundingClientRect();
+            dragOX = px - r.left; dragOY = py - r.top;
+            const e = ELEMS[elKey];
+            ghost.innerHTML = `<div class="chip ${e.chipClass}" style="width:${anchorEl.offsetWidth}px;cursor:grabbing">
+    <i class="ti ${e.icon} ci"></i><span>${e.name}</span></div>`;
+            ghost.style.left = (px - dragOX) + 'px';
+            ghost.style.top = (py - dragOY) + 'px';
+            ghost.classList.add('on');
+        }
+
+        document.addEventListener('pointermove', e => {
+            if (!dragging) return;
+            e.preventDefault();
+            ghost.style.left = (e.clientX - dragOX) + 'px';
+            ghost.style.top = (e.clientY - dragOY) + 'px';
+            document.querySelectorAll('.frame').forEach(f => f.classList.remove('over'));
+            const hit = frameAtPoint(e.clientX, e.clientY);
+            if (hit) hit.classList.add('over');
+        }, { passive: false });
+
+        document.addEventListener('pointerup', e => {
+            if (!dragging) return;
+            document.querySelectorAll('.frame').forEach(f => f.classList.remove('over'));
+            ghost.classList.remove('on');
+            const hit = frameAtPoint(e.clientX, e.clientY);
+            const key = dragging; dragging = null;
+            if (captorEl) { try { captorEl.releasePointerCapture(e.pointerId); } catch (_) { } captorEl = null; }
+            chipEl(key).style.opacity = '';
+
+            if (hit) {
+                const sz = hit.dataset.sz;
+                if (placed[sz] && placed[sz] !== key) chipEl(placed[sz]).classList.remove('placed');
+                for (const s of ['large', 'medium', 'small']) {
+                    if (placed[s] === key) { placed[s] = null; renderFrame(s, null); }
+                }
+                placed[sz] = key;
+                renderFrame(sz, key);
+                chipEl(key).classList.add('placed');
+            } else {
+                for (const s of ['large', 'medium', 'small']) {
+                    if (placed[s] === key) { placed[s] = null; renderFrame(s, null); }
+                }
+                chipEl(key).classList.remove('placed');
+            }
+            updateUI();
+        });
+
+        document.addEventListener('pointercancel', e => {
+            if (!dragging) return;
+            document.querySelectorAll('.frame').forEach(f => f.classList.remove('over'));
+            ghost.classList.remove('on');
+            chipEl(dragging).style.opacity = '';
+            dragging = null;
+            if (captorEl) { try { captorEl.releasePointerCapture(e.pointerId); } catch (_) { } captorEl = null; }
+        });
+
+        /* ── Chip pointerdown ── */
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('pointerdown', e => {
+                if (chip.classList.contains('placed')) return;
+                e.preventDefault();
+                try { chip.setPointerCapture(e.pointerId); captorEl = chip; } catch (_) { }
+                chip.style.opacity = '0.35';
+                beginDrag(chip.dataset.el, chip, e.clientX, e.clientY);
+            });
+        });
+
+        /* ── Re-drag from frame ── */
+        document.querySelectorAll('.frame').forEach(frame => {
+            frame.addEventListener('pointerdown', e => {
+                const sz = frame.dataset.sz;
+                if (!placed[sz] || e.target.classList.contains('rm-btn')) return;
+                e.preventDefault();
+                const key = placed[sz];
+                placed[sz] = null; renderFrame(sz, null);
+                chipEl(key).classList.remove('placed');
+                try { frame.setPointerCapture(e.pointerId); captorEl = frame; } catch (_) { }
+                beginDrag(key, frame, e.clientX, e.clientY);
+                updateUI();
+            });
+        });
+
+        /* ── Result ── */
+        document.getElementById('btn-submit').addEventListener('click', () => {
+            const diagKey = `${placed.large}-${placed.medium}-${placed.small}`;
+            const d = DIAGNOSES[diagKey];
+            if (!d) return;
+
+            ['large', 'medium', 'small'].forEach(sz => {
+                const rf = document.getElementById(`rf-${sz}`);
+                const elKey = placed[sz];
+                rf.style.background = ELEMS[elKey].bg + '35';
+                const rfc = document.createElement('div');
+                rfc.className = 'rfc';
+                rfc.innerHTML = ELEMS[elKey].content[sz];
+                rfc.style.cssText = 'transform:scale(0.78);transform-origin:center top';
+                rf.appendChild(rfc);
+            });
+
+            document.getElementById('res-type').textContent = d.type;
+            document.getElementById('res-hook').textContent = d.hook;
+            document.getElementById('res-desc').textContent = d.desc;
+            document.getElementById('res-detail').textContent = d.detail;
+            document.getElementById('skip-btn').style.display = 'none';
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+        /* ── Retry ── */
+        document.getElementById('btn-retry').addEventListener('click', () => {
+            placed = { large: null, medium: null, small: null };
+            ['large', 'medium', 'small'].forEach(sz => {
+                renderFrame(sz, null);
+                const rf = document.getElementById(`rf-${sz}`);
+                rf.style.background = ''; rf.innerHTML = '';
+            });
+            document.querySelectorAll('.chip').forEach(c => { c.classList.remove('placed'); c.style.opacity = ''; });
+            document.getElementById('btn-submit').classList.remove('on');
+            updateUI();
+            document.getElementById('skip-btn').style.display = '';
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            window.scrollTo(0, 0);
+        });
+
+        /* ── Skip / Next ── */
+        const TOP_URL = './index.html';
+        document.getElementById('skip-btn').addEventListener('click', () => {
+            window.location.href = TOP_URL;
+        });
+        document.getElementById('btn-next').addEventListener('click', () => {
+            window.location.href = TOP_URL;
+        });
+
+        /* ── Share ── */
+        document.getElementById('btn-share').addEventListener('click', () => {
+            const diagKey = `${placed.large}-${placed.medium}-${placed.small}`;
+            const d = DIAGNOSES[diagKey];
+            const text = `私がつくったポスターは「${d.type}」でした！\n${d.desc}\n#情報デザインコース #未来大`;
+            if (navigator.share) {
+                navigator.share({ text }).catch(() => { });
+            } else {
+                navigator.clipboard.writeText(text)
+                    .then(() => alert('結果をコピーしました！'))
+                    .catch(() => alert(text));
+            }
+        });
+    </script>
+</body>
+
+</html>
