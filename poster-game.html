@@ -115,58 +115,72 @@
             height: 368px;
             background: #fff;
             border: 2px solid #2C2C2A;
-            padding: 10px;
-            display: grid;
-            grid-template-areas: "large large" "medium small";
-            grid-template-rows: 55% 45%;
-            grid-template-columns: 3fr 2fr;
-            gap: 7px;
             box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12);
-            position: relative
+            position: relative;
+            overflow: hidden
         }
 
         .poster-label {
             position: absolute;
-            top: -10px;
-            left: 12px;
-            font-size: 9px;
-            color: #888780;
-            background: #FAF8F3;
-            padding: 0 4px
+            top: 8px;
+            left: 10px;
+            font-size: 8px;
+            color: #C0C0B8;
+            z-index: 10;
+            pointer-events: none;
+            user-select: none
         }
 
         .frame {
-            border: 1.5px dashed #C0C0B8;
-            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
+            position: absolute;
             overflow: hidden;
-            transition: border-color 0.1s, background 0.1s
+            transition: background 0.15s
         }
 
         .frame[data-sz=large] {
-            grid-area: large
+            inset: 0
         }
 
         .frame[data-sz=medium] {
-            grid-area: medium
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 54px;
+            width: 196px;
+            height: 100px;
+            border: 1.5px dashed #C0C0B8;
+            border-radius: 4px;
+            z-index: 2;
+            background: rgba(250, 248, 243, 0.9)
         }
 
         .frame[data-sz=small] {
-            grid-area: small
+            right: 12px;
+            bottom: 12px;
+            width: 66px;
+            height: 40px;
+            border: 1.5px dashed #C0C0B8;
+            border-radius: 4px;
+            z-index: 3;
+            background: rgba(250, 248, 243, 0.9)
         }
 
-        .frame.over {
+        .frame.over[data-sz=large] {
+            background: rgba(159, 225, 203, 0.18)
+        }
+
+        .frame.over[data-sz=medium],
+        .frame.over[data-sz=small] {
             border-color: #2C2C2A;
             border-style: solid;
-            background: rgba(159, 225, 203, 0.25)
+            background: rgba(159, 225, 203, 0.45)
         }
 
-        .frame.filled {
-            border-style: solid;
-            border-color: #2C2C2A
+        .frame.filled[data-sz=medium],
+        .frame.filled[data-sz=small] {
+            border: 1.5px solid #2C2C2A
         }
 
         .ph {
@@ -310,45 +324,54 @@
             height: 298px;
             background: #fff;
             border: 2px solid #2C2C2A;
-            padding: 8px;
-            display: grid;
-            grid-template-areas: "large large" "medium small";
-            grid-template-rows: 55% 45%;
-            grid-template-columns: 3fr 2fr;
-            gap: 5px;
+            position: relative;
+            overflow: hidden;
             box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12)
         }
 
         .rf {
-            border: 1.5px solid #2C2C2A;
-            border-radius: 3px;
-            overflow: hidden;
+            position: absolute;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3px
+            overflow: hidden
         }
 
         .rf[data-sz=large] {
-            grid-area: large
+            inset: 0
         }
 
         .rf[data-sz=medium] {
-            grid-area: medium
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 44px;
+            width: 158px;
+            height: 80px;
+            border: 1.5px solid #2C2C2A;
+            border-radius: 3px;
+            background: rgba(250, 248, 243, 0.92);
+            z-index: 2
         }
 
         .rf[data-sz=small] {
-            grid-area: small
+            right: 10px;
+            bottom: 10px;
+            width: 54px;
+            height: 34px;
+            border: 1.5px solid #2C2C2A;
+            border-radius: 3px;
+            background: rgba(250, 248, 243, 0.92);
+            z-index: 3
         }
 
         .rfc {
-            font-size: 6.5px;
+            font-size: 6px;
             line-height: 1.4;
             text-align: center;
             overflow: hidden;
-            max-height: 100%;
             pointer-events: none;
-            width: 100%
+            width: 100%;
+            padding: 2px
         }
 
         .res-info {
@@ -479,16 +502,16 @@
             </div>
             <div class="poster-wrap">
                 <div class="poster" id="poster">
-                    <span class="poster-label">情報デザインコース 特設サイト</span>
                     <div class="frame" data-sz="large" id="f-large">
-                        <div class="ph">大きい枠<br>ここにドロップ</div>
+                        <div class="ph" style="opacity:0.35;font-size:9px">背景</div>
                     </div>
                     <div class="frame" data-sz="medium" id="f-medium">
-                        <div class="ph">中<br>ここに<br>ドロップ</div>
+                        <div class="ph">カード<br>ドロップ</div>
                     </div>
                     <div class="frame" data-sz="small" id="f-small">
-                        <div class="ph">小</div>
+                        <div class="ph" style="font-size:8px">角</div>
                     </div>
+                    <span class="poster-label">情報デザインコース 特設サイト</span>
                 </div>
             </div>
             <div class="chips">
@@ -616,10 +639,14 @@
         const ghost = document.getElementById('ghost');
         const chipEl = k => document.getElementById(ELEMS[k].chipId);
         const frameEl = sz => document.getElementById(`f-${sz}`);
-        const PH = { large: '大きい枠<br>ここにドロップ', medium: '中<br>ここに<br>ドロップ', small: '小' };
+        // 初期プレースホルダーHTMLを保存
+        const PH = {};
+        ['large', 'medium', 'small'].forEach(sz => { PH[sz] = frameEl(sz).innerHTML; });
 
         function frameAtPoint(x, y) {
-            for (const f of document.querySelectorAll('.frame')) {
+            // 小→中→大の順で判定（内側優先）
+            for (const sz of ['small', 'medium', 'large']) {
+                const f = frameEl(sz);
                 const r = f.getBoundingClientRect();
                 if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return f;
             }
@@ -636,11 +663,11 @@
             const f = frameEl(sz);
             if (!elKey) {
                 f.classList.remove('filled'); f.style.background = '';
-                f.innerHTML = `<div class="ph">${PH[sz]}</div>`;
+                f.innerHTML = PH[sz];
                 return;
             }
             f.classList.add('filled');
-            f.style.background = ELEMS[elKey].bg + '35';
+            f.style.background = ELEMS[elKey].bg + (sz === 'large' ? '60' : '35');
             f.innerHTML = `<div class="fc">${ELEMS[elKey].content[sz]}</div>`;
         }
 
@@ -650,8 +677,7 @@
             const r = anchorEl.getBoundingClientRect();
             dragOX = px - r.left; dragOY = py - r.top;
             const e = ELEMS[elKey];
-            ghost.innerHTML = `<div class="chip ${e.chipClass}" style="width:${anchorEl.offsetWidth}px;cursor:grabbing">
-    <i class="ti ${e.icon} ci"></i><span>${e.name}</span></div>`;
+            ghost.innerHTML = `<div class="chip ${e.chipClass}" style="width:${anchorEl.offsetWidth}px;cursor:grabbing"><span>${e.name}</span></div>`;
             ghost.style.left = (px - dragOX) + 'px';
             ghost.style.top = (py - dragOY) + 'px';
             ghost.classList.add('on');
