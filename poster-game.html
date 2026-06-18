@@ -183,6 +183,53 @@
             border: 1.5px solid #2C2C2A
         }
 
+        .fixed-frame {
+            border: 1.5px solid #2C2C2A;
+            background: rgba(250, 248, 243, 0.95);
+            pointer-events: none
+        }
+
+        .title-fixed {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 4px 2px;
+            text-align: center;
+            border-bottom: 1px solid rgba(44, 44, 42, 0.15)
+        }
+
+        .tf-label {
+            font-size: 6px;
+            color: #888780;
+            letter-spacing: 0.1em;
+            margin-bottom: 2px
+        }
+
+        .tf-text {
+            font-size: 7px;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #2C2C2A
+        }
+
+        .ph-under {
+            font-size: 8px;
+            color: #C0C0B8;
+            text-align: center;
+            padding: 4px;
+            pointer-events: none;
+            user-select: none
+        }
+
+        .medium-chip {
+            position: relative;
+            inset: auto;
+            padding: 2px;
+            justify-content: flex-start;
+            align-items: flex-start
+        }
+
         .ph {
             font-size: 9px;
             color: #C0C0B8;
@@ -505,8 +552,11 @@
                     <div class="frame" data-sz="large" id="f-large">
                         <div class="ph" style="opacity:0.35;font-size:9px">背景</div>
                     </div>
-                    <div class="frame" data-sz="medium" id="f-medium">
-                        <div class="ph">カード<br>ドロップ</div>
+                    <div class="frame fixed-frame" data-sz="medium" id="f-medium">
+                        <div class="title-fixed">
+                            <div class="tf-label">TITLE</div>
+                            <div class="tf-text">未来大<br>情報デザインコース<br>特設サイト</div>
+                        </div>
                     </div>
                     <div class="frame" data-sz="small" id="f-small">
                         <div class="ph" style="font-size:8px">角</div>
@@ -532,7 +582,13 @@
             <div class="res-poster-wrap">
                 <div class="res-poster">
                     <div class="rf" data-sz="large" id="rf-large"></div>
-                    <div class="rf" data-sz="medium" id="rf-medium"></div>
+                    <div class="rf rf-title" data-sz="medium" id="rf-medium">
+                        <div class="rfc"
+                            style="transform:scale(0.78);transform-origin:center top;text-align:center;line-height:1.5">
+                            <div style="font-size:5px;color:#888;letter-spacing:0.08em;margin-bottom:2px">TITLE</div>
+                            <div style="font-size:7px;font-weight:700">未来大<br>情報デザインコース<br>特設サイト</div>
+                        </div>
+                    </div>
                     <div class="rf" data-sz="small" id="rf-small"></div>
                 </div>
             </div>
@@ -593,39 +649,39 @@
         const DIAGNOSES = {
             'fun-what-oc': {
                 type: '部活勧誘ポスター',
-                hook: '「興味を持ってもらってから誘う」丁寧な構成。',
-                desc: '楽しさが一番大きく、次に説明、行動喚起は小さめ。',
-                detail: '部活の雰囲気を前面に出し、活動内容で興味をつなぎ、入部申込は小さく添える。押しつけがましくなく、来てくれる人を待つスタンスが伝わります。'
+                hook: '「雰囲気で引き込んでから問いかける」構成。',
+                desc: '楽しさが背景を埋め、タイトルと概念が中央に、OCへの誘いがバッジに。',
+                detail: '押しつけがましくなく、来てくれる人を待つスタンスが伝わります。まず雰囲気で心をつかみ、「どんなとこ？」という興味へとつながる流れ。'
             },
             'fun-oc-what': {
                 type: 'ライブのフライヤー',
-                hook: '「細かいことより、まず来て」という構成。',
-                desc: '楽しさで一気に引き込み、日程・行動へすぐ誘導。説明は最小限。',
-                detail: '「とにかく来て」が伝わるポスター。細かい説明より雰囲気と日程だけあれば十分、というフライヤーらしい割り切りが出ています。'
+                hook: '「楽しさを見せてすぐ行動に誘う」構成。',
+                desc: '楽しさが背景を埋め、タイトルとOC日程が中央に、概念の問いがバッジに。',
+                detail: '細かい説明より雰囲気と日程だけあれば十分、というフライヤーらしい割り切りが出ています。勢いで動かすデザイン。'
             },
             'what-fun-oc': {
                 type: '博物館の解説パネル',
-                hook: '「まず知ってほしい」という構成。',
-                desc: '説明が主役で、楽しさは補足、行動喚起はほぼない。',
-                detail: '来場者がすでにそこにいることを前提にした、展示室の解説パネルに近いレイアウトです。「知ってから好きになる」という流れが見えます。'
+                hook: '「問いを立ててから楽しさを添える」構成。',
+                desc: '概念が背景を埋め、タイトルと楽しさが中央に、OCへの誘いがバッジに。',
+                detail: '「デザインとは何か」を先に見せることで、興味を持った人を確実に引き込みます。楽しさはその後押し。'
             },
             'what-oc-fun': {
                 type: 'セミナーの告知チラシ',
-                hook: '「納得してから来てほしい」という構成。',
-                desc: '内容・テーマが大きく、申込情報が中くらい、楽しさは添え物。',
-                detail: '参加者に内容を吟味してほしい講演会や勉強会の告知に近い構成です。「何について」が伝わってから「申し込んでほしい」という流れ。'
+                hook: '「問いかけてから行動へ誘う」構成。',
+                desc: '概念が背景を埋め、タイトルとOC日程が中央に、楽しさのバッジが和らげる。',
+                detail: '「デザインとは何か」を先に提示してからOCに誘う丁寧な導線。参加者に内容を吟味してほしいセミナー告知に近い構成。'
             },
             'oc-fun-what': {
                 type: 'タイムセールのポスター',
-                hook: '「理由はいいから来て」という構成。',
-                desc: '「来て！」が最大で、楽しさで後押し、説明は最小限。',
-                detail: 'SALE・期間限定など、とにかく足を運んでもらうことが最優先のポスターに似ています。結論から始まる、勢いのある構成です。'
+                hook: '「まず来てもらって、楽しさで後押しする」構成。',
+                desc: 'OCポスターが背景を埋め、タイトルと楽しさが中央に、概念の問いがバッジに。',
+                detail: '「来て！」が最前面に出て、楽しさで背中を押す。とにかく足を運んでもらうことが最優先の、勢いのある構成。'
             },
             'oc-what-fun': {
                 type: '求人広告',
-                hook: '「来てほしい理由をちゃんと示す」構成。',
-                desc: '行動（参加・応募）が最大、理由・内容が続き、感情は最後に少し。',
-                detail: '応募者に判断材料を渡しながら行動を促す、誠実な構成。求人広告や公募チラシのように、理由を示してから誘います。'
+                hook: '「行動を前面に出して問いで補強する」構成。',
+                desc: 'OCポスターが背景を埋め、タイトルと概念が中央に、楽しさのバッジが締める。',
+                detail: '「来てほしい」を最前面に出してから、デザインとは何かで理由を補足する。誠実さと勢いが両立した構成。'
             }
         };
 
@@ -639,12 +695,12 @@
         const ghost = document.getElementById('ghost');
         const chipEl = k => document.getElementById(ELEMS[k].chipId);
         const frameEl = sz => document.getElementById(`f-${sz}`);
-        // 初期プレースホルダーHTMLを保存
         const PH = {};
-        ['large', 'medium', 'small'].forEach(sz => { PH[sz] = frameEl(sz).innerHTML; });
+        ['large', 'small'].forEach(sz => { PH[sz] = frameEl(sz).innerHTML; });
+        // medium は常にタイトル固定なので別途管理
+        const MEDIUM_TITLE = `<div class="title-fixed"><div class="tf-label">TITLE</div><div class="tf-text">未来大<br>情報デザインコース<br>特設サイト</div></div>`;
 
         function frameAtPoint(x, y) {
-            // 小→中→大の順で判定（内側優先）
             for (const sz of ['small', 'medium', 'large']) {
                 const f = frameEl(sz);
                 const r = f.getBoundingClientRect();
@@ -661,6 +717,18 @@
         /* ── Frame render ── */
         function renderFrame(sz, elKey) {
             const f = frameEl(sz);
+            if (sz === 'medium') {
+                // 中フレームはタイトル固定 + チップ内容の複合
+                f.style.background = elKey ? ELEMS[elKey].bg + '25' : '';
+                if (elKey) {
+                    f.classList.add('filled');
+                    f.innerHTML = `${MEDIUM_TITLE}<div class="fc medium-chip">${ELEMS[elKey].content[sz]}</div>`;
+                } else {
+                    f.classList.remove('filled');
+                    f.innerHTML = `${MEDIUM_TITLE}<div class="ph ph-under">ここにドロップ</div>`;
+                }
+                return;
+            }
             if (!elKey) {
                 f.classList.remove('filled'); f.style.background = '';
                 f.innerHTML = PH[sz];
@@ -761,7 +829,7 @@
             const d = DIAGNOSES[diagKey];
             if (!d) return;
 
-            ['large', 'medium', 'small'].forEach(sz => {
+            ['large', 'small'].forEach(sz => {
                 const rf = document.getElementById(`rf-${sz}`);
                 const elKey = placed[sz];
                 rf.style.background = ELEMS[elKey].bg + '35';
@@ -771,6 +839,19 @@
                 rfc.style.cssText = 'transform:scale(0.78);transform-origin:center top';
                 rf.appendChild(rfc);
             });
+            // 中フレームはタイトル固定 + チップ内容を追加
+            {
+                const rfm = document.getElementById('rf-medium');
+                const elKey = placed.medium;
+                if (elKey) {
+                    rfm.style.background = ELEMS[elKey].bg + '20';
+                    const rfc = document.createElement('div');
+                    rfc.className = 'rfc';
+                    rfc.style.cssText = 'transform:scale(0.72);transform-origin:center bottom;font-size:5.5px;color:#5F5E5A';
+                    rfc.innerHTML = ELEMS[elKey].content['medium'];
+                    rfm.appendChild(rfc);
+                }
+            }
 
             document.getElementById('res-type').textContent = d.type;
             document.getElementById('res-hook').textContent = d.hook;
@@ -785,11 +866,17 @@
         /* ── Retry ── */
         document.getElementById('btn-retry').addEventListener('click', () => {
             placed = { large: null, medium: null, small: null };
-            ['large', 'medium', 'small'].forEach(sz => {
-                renderFrame(sz, null);
+            ['large', 'medium', 'small'].forEach(sz => { renderFrame(sz, null); });
+            // 結果ポスターのリセット（大・小だけクリア、中はタイトルを維持）
+            ['large', 'small'].forEach(sz => {
                 const rf = document.getElementById(`rf-${sz}`);
                 rf.style.background = ''; rf.innerHTML = '';
             });
+            const rfm = document.getElementById('rf-medium');
+            rfm.style.background = '';
+            // chip部分だけ削除（2つ目以降のrfcを削除）
+            const rfcs = rfm.querySelectorAll('.rfc');
+            if (rfcs.length > 1) rfcs[1].remove();
             document.querySelectorAll('.chip').forEach(c => { c.classList.remove('placed'); c.style.opacity = ''; });
             document.getElementById('btn-submit').classList.remove('on');
             updateUI();
