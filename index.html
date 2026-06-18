@@ -369,7 +369,19 @@
             const colors = ["#D3D1C7", "#9FE1CB", "#FAC775", "#CECBF6", "#B5D4F4", "#F5C4B3", "#C0DD97", "#B4B2A9", "#9FE1CB", "#FAC775"];
             const [layout, setLayout] = useState(null);
             useEffect(() => {
-                try { const s = localStorage.getItem('poster_layout'); if (s) setLayout(JSON.parse(s)); } catch (e) { }
+                try {
+                    const hash = window.location.hash;
+                    if (hash.includes('layout=')) {
+                        const data = decodeURIComponent(hash.split('layout=')[1]);
+                        const parsed = JSON.parse(data);
+                        setLayout(parsed);
+                        try { localStorage.setItem('poster_layout', data); } catch (e) { }
+                        history.replaceState(null, '', window.location.pathname);
+                        return;
+                    }
+                    const s = localStorage.getItem('poster_layout');
+                    if (s) setLayout(JSON.parse(s));
+                } catch (e) { }
             }, []);
             const CL = { fun: '#FAC775', what: '#CECBF6', oc: '#9FE1CB' };
             const CT = { fun: '楽しい', what: '何か', oc: 'OC' };

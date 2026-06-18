@@ -779,8 +779,9 @@
             window.location.href = TOP_URL;
         });
         document.getElementById('btn-next').addEventListener('click', () => {
-            try { localStorage.setItem('poster_layout', JSON.stringify(placed)); } catch (e) { }
-            window.location.href = TOP_URL;
+            const layoutStr = JSON.stringify(placed);
+            try { localStorage.setItem('poster_layout', layoutStr); } catch (e) { }
+            window.location.href = TOP_URL + '#layout=' + encodeURIComponent(layoutStr);
         });
 
         /* ── Share ── */
