@@ -341,10 +341,8 @@
         const COURSES = [
             { id: 0, period: "4月・5月", name: "仮想生物", desc: "架空の生物をデザインし、生態系を考える課題。観察・発想・表現の基礎を習得する。", icon: "ti-bug", cols: ["#D3D1C7", "#9FE1CB", "#FAC775", "#B4B2A9"] },
             { id: 1, period: "6月・7月", name: "フィールド調査ポスター", desc: "現地調査の結果をポスターに視覚化する。データを「伝わる形」にする技術を磨く。", icon: "ti-map-pin", cols: ["#CECBF6", "#B5D4F4", "#C0DD97", "#D3D1C7"] },
-            { id: 2, period: "夏休み", name: "夏休み", desc: "自由制作期間。各自のテーマで作品を制作し、2年前期の学びを深める。", icon: "ti-sun", cols: ["#FAC775", "#F5C4B3", "#9FE1CB", "#B4B2A9"] },
-            { id: 3, period: "9月・10月", name: "遊びの提案", desc: "「遊び」をデザインする課題。ユーザー体験を考えながらゲームや体験を設計する。", icon: "ti-puzzle", cols: ["#9FE1CB", "#C0DD97", "#CECBF6", "#D3D1C7"] },
-            { id: 4, period: "11月・12月", name: "サービスの提案", desc: "社会課題を解決するサービスをデザインする。ステークホルダーマップやペルソナを活用。", icon: "ti-device-mobile", cols: ["#B5D4F4", "#CECBF6", "#9FE1CB", "#C0DD97"] },
-            { id: 5, period: "春休み", name: "春休み", desc: "1年間の学びを振り返り、次の学年に向けて自由制作に取り組む最終フェーズ。", icon: "ti-flower", cols: ["#F5C4B3", "#FAC775", "#D3D1C7", "#B4B2A9"] },
+            { id: 2, period: "9月・10月", name: "遊びの提案", desc: "「遊び」をデザインする課題。ユーザー体験を考えながらゲームや体験を設計する。", icon: "ti-puzzle", cols: ["#9FE1CB", "#C0DD97", "#CECBF6", "#D3D1C7"] },
+            { id: 3, period: "11月・12月", name: "サービスの提案", desc: "社会課題を解決するサービスをデザインする。ステークホルダーマップやペルソナを活用。", icon: "ti-device-mobile", cols: ["#B5D4F4", "#CECBF6", "#9FE1CB", "#C0DD97"] },
         ];
         const SLIDE_LABELS = ["作品写真", "制作過程", "プレゼン資料", "ボツ案も…"];
         const CYCLE = [{ icon: "ti-eye", label: "観察する" }, { icon: "ti-bulb", label: "発想する" }, { icon: "ti-pencil", label: "つくる" }, { icon: "ti-presentation", label: "伝える" }];
@@ -526,7 +524,7 @@
             const handleScroll = () => {
                 if (!ref.current) return;
                 const idx = Math.round(ref.current.scrollTop / 440);
-                setActiveCourse(Math.min(5, Math.max(0, idx)));
+                setActiveCourse(Math.min(3, Math.max(0, idx)));
             };
             const goTo = (i) => {
                 if (!ref.current) return;
@@ -555,9 +553,6 @@
                                     React.createElement("button", { onClick: () => updateSlide(i, -1), style: { padding: "4px 14px", border: "1.5px solid #888780", borderRadius: 4, background: "#FAF8F3" } }, React.createElement("i", { className: "ti ti-arrow-left" })),
                                     React.createElement("span", { style: { fontSize: 11, color: "#888780" } }, (slideIndex[i] + 1) + " / 4"),
                                     React.createElement("button", { onClick: () => updateSlide(i, 1), style: { padding: "4px 14px", border: "1.5px solid #888780", borderRadius: 4, background: "#FAF8F3" } }, React.createElement("i", { className: "ti ti-arrow-right" }))
-                                ),
-                                React.createElement("button", { onClick: onExperience, style: { width: "100%", padding: "10px", border: "2px solid #2C2C2A", borderRadius: 6, background: "#FAF8F3", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontSize: 12, fontWeight: 700, transform: "rotate(0.3deg)" } },
-                                    React.createElement("i", { className: "ti ti-player-play" }), "疑似体験コーナーへ"
                                 )
                             )
                         ))
